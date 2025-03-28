@@ -29,7 +29,7 @@ export const DateRangeCalendar = ({
             id="date"
             variant={"outline"}
             className={cn(
-              "max-w-[300px] justify-start text-left font-normal",
+              "max-w-[400px] justify-start text-left font-normal",
               !date && "text-muted-foreground",
             )}
           >

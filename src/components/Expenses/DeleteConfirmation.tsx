@@ -6,16 +6,27 @@ import {
 import { TiDelete } from "react-icons/ti";
 export const DeleteConfirmation = ({
   onConfirm,
+  name,
+  estilo,
 }: {
   onConfirm: () => void;
+  name: string;
+  estilo?: {
+    icon: string;
+    content: string;
+  };
 }) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <TiDelete className=" size-6 text-red-700 cursor-pointer text-" />
+        <TiDelete
+          className={` size-6 text-red-700 cursor-pointer ${estilo ? estilo.icon : ""} `}
+        />
       </PopoverTrigger>
-      <PopoverContent className="bg-white flex flex-col justify-center items-center gap-6 shadow-xl border-primary">
-        <p>Deseas eliminar este gasto?</p>
+      <PopoverContent
+        className={`bg-white flex flex-col justify-center items-center gap-6 shadow-xl border-primary ${estilo ? estilo.content : ""}`}
+      >
+        <p>Deseas eliminar {name}?</p>
         <div className="w-full flex justify-around items-center">
           <button
             onClick={onConfirm}

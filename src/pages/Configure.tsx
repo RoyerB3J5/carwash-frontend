@@ -1,49 +1,43 @@
-import { useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "../hooks/useApi";
-import { Services } from "../types";
+import { DeleteConfirmation } from "@/components/Expenses/DeleteConfirmation";
 import { FaCirclePlus } from "react-icons/fa6";
 import TypeExpenses from "../components/TypeExpenses";
+import Spinner from "@/components/Spinner";
+import { useConfigureData } from "@/hooks/Configure/useConfigureData";
+import { useDeleteConfigure } from "@/hooks/Configure/useConfigureMutation";
 
 function Configure() {
-  const [services, setServices] = useState<Services[]>();
-  const [callApi, setCallApi] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { get, delete: deleteRequest } = useApi();
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchServices = async () => {
-      setLoading(true);
-      const newData = await get<Services[]>("services");
-      setServices(newData);
-      setLoading(false);
-    };
-    fetchServices();
-  }, [callApi]);
-  const deleteVehicle = async (vehicleType: string) => {
-    await deleteRequest(`services/${vehicleType}`);
-    setTimeout(() => setCallApi(!callApi), 500);
-  };
 
+  const { data: services, isLoading, isError } = useConfigureData();
+  const { mutate } = useDeleteConfigure();
+  const deleteVehicle = (vehicleType: string) => {
+    mutate(vehicleType);
+  };
+  const estilo = {
+    icon: "size-9",
+    content: "mr-9",
+  };
   return (
     <>
       <h2 className=" text-center font-semibold text-2xl">
         Servicio de vehiculos
       </h2>
-      {loading ? (
-        <div className="flex justify-center items-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-        </div>
-      ) : null}
+      {isLoading && <Spinner />}
+      {isError && <div>Erorr: No se ha podido obtener los datos</div>}
+      {!isLoading && !isError && services?.length === 0 && (
+        <p>No hay existen tipos de lavados</p>
+      )}
+
       {services &&
+        services.length > 0 &&
         services.map((service) => {
           return (
             <section
               className=" relative flex bg-slate-200 rounded-md w-full h-auto py-9 px-6 sm:px-16 flex-col gap-6 mb-8"
               key={service._id}
             >
-              <div className=" flex flex-col sm:flex-row justify-between items-center gap-3">
+              <div className=" flex flex-row justify-between items-center gap-3">
                 <h3 className="text-h4 font-normal"> {service.vehicleType}</h3>
                 <div className=" flex gap-4 justify-center items-center">
                   <FaCirclePlus
@@ -52,17 +46,20 @@ function Configure() {
                       navigate(`/configure/${service.vehicleType}`)
                     }
                   />
-                  <FaTrash
-                    className=" text-red-800 h-5 hover:cursor-pointer"
-                    onClick={() => deleteVehicle(service.vehicleType)}
+                  <DeleteConfirmation
+                    onConfirm={() => deleteVehicle(service.vehicleType)}
+                    name="estos servicios"
+                    estilo={estilo}
                   />
                 </div>
               </div>
               <div className=" overflow-x-auto w-full ">
-                <table className="w-[800px] md:w-full table-fixed">
+                <table className="w-full table-fixed">
                   <thead className="bg-gray-400 text-white">
                     <tr>
-                      <th className="border border-black py-3 w-1/4">N</th>
+                      <th className="hidden sm:table-cell border border-black py-3 w-1/4 ">
+                        N
+                      </th>
                       <th className="border border-black py-3 w-1/4">Lavado</th>
                       <th className="border border-black py-3 w-1/4">
                         {" "}
@@ -74,7 +71,7 @@ function Configure() {
                     {service.service.map((stype, index) => {
                       return (
                         <tr key={stype._id}>
-                          <th className="border border-black py-3 whitespace-normal break-words uppercase">
+                          <th className="hidden sm:table-cell border border-black py-3 whitespace-normal break-words uppercase">
                             {index + 1}
                           </th>
                           <th className="border border-black py-3 whitespace-normal break-words uppercase">
@@ -98,7 +95,7 @@ function Configure() {
       >
         + Nuevo Vehiculo
       </button>
-      <TypeExpenses/>
+      <TypeExpenses />
     </>
   );
 }

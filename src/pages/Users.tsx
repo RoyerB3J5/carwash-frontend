@@ -47,7 +47,7 @@ function Users() {
 
   return (
     <>
-      <section className="flex bg-slate-200 rounded-md w-full h-auto py-9 px-6 sm:px-12 flex-col gap-3 sm:gap-6">
+      <section className="flex bg-slate-200 rounded-md w-full h-auto py-9 px-6 sm:px-12 flex-col gap-3 sm:gap-9">
         <h3 className="text-h4 font-semibold">Clientes:</h3>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 w-full">

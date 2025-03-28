@@ -13,9 +13,14 @@ import {
 } from "@/components/ui/popover";
 interface DateRangeProps {
   date: DateRange | undefined;
+  setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
   className?: React.HTMLAttributes<HTMLDivElement>;
 }
-export const DateRangeCalendar = ({ date, className }: DateRangeProps) => {
+export const DateRangeCalendar = ({
+  date,
+  setDate,
+  className,
+}: DateRangeProps) => {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>

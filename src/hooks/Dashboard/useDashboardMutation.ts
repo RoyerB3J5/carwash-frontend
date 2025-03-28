@@ -21,7 +21,7 @@ export const usePatchUserFinished = () => {
         return {
           ...old,
           data: old.data.filter((user) => user._id !== id),
-          length: old.length - 1,
+          count: old.count - 1,
         };
       });
       return { previousUsers };
@@ -64,7 +64,7 @@ export const usePostUser = () => {
               updatedAt: new Date(),
             },
           ],
-          length: old.length + 1,
+          count: old.count + 1,
         };
       });
 

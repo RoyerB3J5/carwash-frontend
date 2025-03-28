@@ -130,7 +130,7 @@ function Dashboard() {
             <p>S/ {dataForm.price}</p>
           </div>
           <button
-            className="py-2 px-4 bg-accent rounded-lg text-p font-semibold"
+            className="py-2 px-4 bg-accent rounded-lg text-p font-semibold cursor-pointer hover:-translate-y-1 transition-all duration-300"
             onClick={handleSubmit}
           >
             {isPendingForm ? "Guardando..." : "Guardar"}
@@ -139,11 +139,14 @@ function Dashboard() {
       </section>
       <section className="flex bg-slate-200 rounded-md w-full h-auto p-6 sm:py-9 sm:px-12 flex-col gap-6">
         <h3 className="text-h4 font-normal">Carros en lavado...</h3>
-        <div className=" overflow-x-auto w-full ">
+        <div className=" overflow-x-auto w-full h-auto ">
           {isLoading && <Spinner />}
           {isError && <div> Error: No se ha podido obtener los datos</div>}
           {!isLoading && !isError && usersFalse?.count === 0 && (
-            <p> No hay carros lavando</p>
+            <p className="text-center text-h5 font-medium ">
+              {" "}
+              No hay carros lavando
+            </p>
           )}
           {usersFalse && usersFalse.count > 0 && (
             <TableDashboard

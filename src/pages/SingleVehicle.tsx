@@ -10,8 +10,8 @@ function SingleVehicle() {
   const { vehicleType } = useParams();
   const [service, setService] = useState<Services>({
     _id: "",
-    service:[],
-    vehicleType:""
+    service: [],
+    vehicleType: "",
   });
   const navigate = useNavigate();
   const { get, put } = useApi();
@@ -25,14 +25,17 @@ function SingleVehicle() {
     fetchVehicleService();
   }, [vehicleType]);
 
-
   const updateService = async () => {
-    if(!service) return
+    if (!service) return;
     const serviceUpdate = service.service.map(({ _id, ...rest }) => rest);
-    const updatedData = await put<{service: Service[]}, Services>(`services/${vehicleType}`, {
-      service: serviceUpdate,
-    });
+    const updatedData = await put<{ service: Service[] }, Services>(
+      `services/${vehicleType}`,
+      {
+        service: serviceUpdate,
+      },
+    );
     setService(updatedData);
+    console.log(updatedData);
   };
   return (
     <>

@@ -15,7 +15,10 @@ export const ExpenseTableRow = ({ data, handleDelete }: TableRowProps) => {
       </TableCell>
       <TableCell className="text-center">{data.day}</TableCell>
       <TableCell className="text-center flex justify-center items-center">
-        <DeleteConfirmation onConfirm={() => handleDelete(data._id)} />
+        <DeleteConfirmation
+          onConfirm={() => handleDelete(data._id)}
+          name="este gasto"
+        />
       </TableCell>
     </TableRow>
   );
