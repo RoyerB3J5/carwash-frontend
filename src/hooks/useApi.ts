@@ -6,7 +6,7 @@ interface RequestProps<TData = unknown> {
 }
 
 type ApiMethods = {
-  get: <TData, TResponse>(url: string, data?: TData) => Promise<TResponse>;
+  get: <TResponse>(url: string) => Promise<TResponse>;
   post: <TData, TResponse>(url: string, data: TData) => Promise<TResponse>;
   put: <TData, TResponse>(url: string, data: TData) => Promise<TResponse>;
   patch: <TData, TResponse>(url: string, data: TData) => Promise<TResponse>;
@@ -44,11 +44,10 @@ export const useApi = (): ApiMethods => {
     }
   };
   return {
-    get: <TData, TResponse>(url: string, data?: TData) =>
-      makeRequest<TData, TResponse>({
+    get: <TResponse>(url: string) =>
+      makeRequest<undefined, TResponse>({
         url,
         method: "GET",
-        data: data as TData,
       }),
     post: <TData, TResponse>(url: string, data: TData) =>
       makeRequest<TData, TResponse>({ url, method: "POST", data }),

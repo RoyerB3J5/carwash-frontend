@@ -12,7 +12,7 @@ export const useDataClients = ({ dates }: DataClientsProps) => {
   const { get } = useApi();
   return useQuery({
     queryKey: ["clients", dates.start, dates.end],
-    queryFn: () => get<DatesProps, UserDate>("users/date", dates),
+    queryFn: () => get<UserDate, DatesProps>("users/date", dates),
     staleTime: 1000 * 60 * 3,
     enabled: !!dates.start && !!dates.end,
   });

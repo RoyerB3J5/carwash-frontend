@@ -21,6 +21,8 @@ function Dashboard() {
     price: 0,
     finished: false,
   });
+  const { data: usersFalse, isLoading, isError } = useDashboardDataUnfinished();
+  const { mutate, isPending: isPendingUser } = usePatchUserFinished();
   const { data: services } = useDataServiceAll();
   const { data: dataServices } = useDataServiceOne(dataForm.vehicle);
   const { handleChangeData, handleSubmit, isPendingForm } = useDashboardForm({
@@ -28,8 +30,7 @@ function Dashboard() {
     data: dataForm,
     setData: setDataForm,
   });
-  const { data: usersFalse, isLoading, isError } = useDashboardDataUnfinished();
-  const { mutate, isPending: isPendingUser } = usePatchUserFinished();
+
   const handleUsers = (_id: string) => {
     mutate(_id);
   };
@@ -141,10 +142,10 @@ function Dashboard() {
         <div className=" overflow-x-auto w-full ">
           {isLoading && <Spinner />}
           {isError && <div> Error: No se ha podido obtener los datos</div>}
-          {!isLoading && !isError && usersFalse?.length === 0 && (
+          {!isLoading && !isError && usersFalse?.count === 0 && (
             <p> No hay carros lavando</p>
           )}
-          {usersFalse && usersFalse.length > 0 && (
+          {usersFalse && usersFalse.count > 0 && (
             <TableDashboard
               usersFalse={usersFalse}
               handleUsers={handleUsers}

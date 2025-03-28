@@ -1,6 +1,6 @@
 export interface UserDate {
   data: User[];
-  length: number;
+  count: number;
 }
 export interface FormUserData {
   name: string;

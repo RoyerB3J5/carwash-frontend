@@ -21,7 +21,7 @@ export const TableDashboard = ({
         </tr>
       </thead>
       <tbody className="text-center">
-        {usersFalse && usersFalse.data.length > 0 ? (
+        {usersFalse && usersFalse.count > 0 ? (
           usersFalse.data.map((user) => {
             return (
               <tr key={user._id}>
@@ -39,7 +39,7 @@ export const TableDashboard = ({
                 </td>
                 <td className="border border-black py-3">
                   <button
-                    className="bg-accent text-p px-2 py-1 rounded-lg font-semibold"
+                    className="bg-accent text-p px-3 py-1 rounded-lg font-semibold cursor-pointer"
                     onClick={() => handleUsers(user._id)}
                     disabled={isPendingUser}
                   >

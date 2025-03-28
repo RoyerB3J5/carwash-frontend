@@ -16,7 +16,7 @@ export const useDataServiceOne = (vehicle: string) => {
   return useQuery({
     queryKey: ["service", vehicle],
     queryFn: () => get<Services>(`services/${vehicle}`),
-    enabled: !!vehicle,
+    enabled: vehicle !== "",
     staleTime: 1000 * 60 * 2,
   });
 };
