@@ -10,7 +10,7 @@ import { FormExpense } from "@/components/Expenses/FormExpense";
 import { TypeExpenseProps } from "@/types";
 
 function Expenses() {
-  const [typeExpenses, setTypeExpenses] = useState<TypeExpenseProps[]>([
+  const typeExpenses: TypeExpenseProps[] = [
     {
       _id: "124",
       name: "Servicios",
@@ -23,7 +23,7 @@ function Expenses() {
       _id: "1342",
       name: "Alquiler",
     },
-  ]);
+  ];
   const currentDate = new Date();
   const [date, setDate] = useState<Date>(currentDate);
   const [currentYear, setCurrentYear] = useState(currentDate);

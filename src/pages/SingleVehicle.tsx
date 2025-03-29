@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import NewVehicleForm from "../components/NewVehicleForm";
-
+import { useUpdateConfigure } from "@/hooks/Configure/useConfigureMutation";
 import { Services } from "../types";
 import { useSingleService } from "@/hooks/Configure/useConfigureData";
 import Spinner from "@/components/Spinner";
@@ -11,16 +11,27 @@ function SingleVehicle() {
   const { vehicleType } = useParams();
 
   const navigate = useNavigate();
-
-  const { data, isLoading, isError } = useSingleService(vehicleType);
-  const [service, setService] = useState<Services>(
-    () => data || { service: [], vehicleType: "" },
+  const { data, isLoading, isError } = useSingleService(
+    vehicleType?.trim() || "",
   );
+  const [service, setService] = useState<Services>(
+    () => data || { service: [], vehicleType: vehicleType?.trim() || "" },
+  );
+  useEffect(() => {
+    if (!vehicleType?.trim()) {
+      navigate("/configure", { replace: true });
+    }
+  }, [vehicleType, navigate]);
   useEffect(() => {
     if (data) {
       setService(data);
     }
   }, [data]);
+
+  const { mutate } = useUpdateConfigure(vehicleType?.trim() || "");
+  const updateService = () => {
+    mutate(service.service);
+  };
 
   return (
     <>
@@ -43,7 +54,11 @@ function SingleVehicle() {
             Servicios de {service.vehicleType}
           </h2>
 
-          <NewVehicleForm service={service} setService={setService} />
+          <NewVehicleForm
+            service={service}
+            setService={setService}
+            updateService={updateService}
+          />
         </>
       )}
     </>

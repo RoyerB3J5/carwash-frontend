@@ -2,6 +2,7 @@ export interface UserDate {
   data: User[];
   count: number;
 }
+
 export interface FormUserData {
   name: string;
   lastname: string;
@@ -43,6 +44,7 @@ export interface ServiceProps {
 export interface NewVehicleProps {
   service: Services;
   setService: React.Dispatch<React.SetStateAction<Services>>;
+  updateService: () => void;
 }
 
 //Expenses Pages

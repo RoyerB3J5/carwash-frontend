@@ -25,7 +25,11 @@ export const useDeleteConfigure = () => {
     onSuccess: () => {
       toast.success("Servicios eliminados");
     },
-    onError: () => {
+    onError: (error, variable, context) => {
+      queryClient.setQueryData(
+        ["configure", "services"],
+        context?.previousServices,
+      );
       toast.error("Error al eliminar los servicios");
     },
   });
@@ -73,6 +77,40 @@ export const useUpdateConfigure = (vehicleType: string) => {
         context?.previousServices,
       );
       toast.error("Error al actualizar los servicios");
+    },
+  });
+};
+export const useNewService = () => {
+  const { post } = useApi();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newService: Services) =>
+      post<Services, Services>("services", newService),
+    onMutate: async (newServices) => {
+      await queryClient.cancelQueries({
+        queryKey: ["configure", "services"],
+      });
+      const previousServices = queryClient.getQueryData<Services[]>([
+        "configure",
+        "services",
+      ]);
+      queryClient.setQueryData<Services[]>(["configure", "services"], (old) => {
+        if (!old) return undefined;
+        return [...old, newServices];
+      });
+      return { previousServices };
+    },
+    onSuccess: () => {
+      toast.success("Nuevos lavados creados");
+      navigate(-1);
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(
+        ["configure", "services"],
+        context?.previousServices,
+      );
+      toast.error("Error al crear los lavados");
     },
   });
 };

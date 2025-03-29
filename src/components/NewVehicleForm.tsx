@@ -1,8 +1,12 @@
 import { FaPlus } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { NewVehicleProps } from "../types";
-import { useUpdateConfigure } from "@/hooks/Configure/useConfigureMutation";
-function NewVehicleForm({ service, setService }: NewVehicleProps) {
+
+function NewVehicleForm({
+  service,
+  setService,
+  updateService,
+}: NewVehicleProps) {
   const addService = () => {
     setService((prevService) => ({
       ...prevService,
@@ -29,10 +33,6 @@ function NewVehicleForm({ service, setService }: NewVehicleProps) {
       ...prevService,
       service: prevService.service.filter((_, i) => i !== index),
     }));
-  };
-  const { mutate } = useUpdateConfigure(service.vehicleType);
-  const updateService = () => {
-    mutate(service.service);
   };
 
   return (
@@ -83,6 +83,7 @@ function NewVehicleForm({ service, setService }: NewVehicleProps) {
       <button
         className="mt-3 cursor-pointer  bg-accent p-2.5 w-full flex justify-center items-center rounded-lg"
         onClick={updateService}
+        disabled={service.service.length === 0 ? true : false}
       >
         <p className="font-semibold">Actualizar</p>
       </button>
