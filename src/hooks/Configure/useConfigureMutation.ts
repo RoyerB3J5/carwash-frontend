@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "../useApi";
-import { Services } from "@/types/index";
+import { Services, Service } from "@/types/index";
 import { toast } from "sonner";
-
+import { useNavigate } from "react-router-dom";
 export const useDeleteConfigure = () => {
   const { delete: deleteServices } = useApi();
   const queryClient = useQueryClient();
@@ -27,6 +27,52 @@ export const useDeleteConfigure = () => {
     },
     onError: () => {
       toast.error("Error al eliminar los servicios");
+    },
+  });
+};
+
+export const useUpdateConfigure = (vehicleType: string) => {
+  const { put } = useApi();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: (service: Service[]) =>
+      put<Service[], Services>(`services/${vehicleType}`, service),
+    onMutate: async (vehicleService) => {
+      await queryClient.cancelQueries({
+        queryKey: ["configure", "services"],
+      });
+
+      const previousServices = queryClient.getQueryData<Services[]>([
+        "configure",
+        "services",
+      ]);
+
+      queryClient.setQueryData<Services[]>(["configure", "services"], (old) => {
+        if (!old) return undefined;
+        return old.map((serviceSingle) => {
+          if (serviceSingle.vehicleType === vehicleType) {
+            return {
+              ...serviceSingle,
+              service: vehicleService,
+            };
+          }
+          return serviceSingle;
+        });
+      });
+
+      return { previousServices };
+    },
+    onSuccess: () => {
+      toast.success("Servicios actualizados");
+      navigate(-1);
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(
+        ["configure", "services"],
+        context?.previousServices,
+      );
+      toast.error("Error al actualizar los servicios");
     },
   });
 };

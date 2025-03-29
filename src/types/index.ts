@@ -43,7 +43,6 @@ export interface ServiceProps {
 export interface NewVehicleProps {
   service: Services;
   setService: React.Dispatch<React.SetStateAction<Services>>;
-  updateService: () => Promise<void>;
 }
 
 //Expenses Pages

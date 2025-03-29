@@ -3,60 +3,47 @@ import { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import NewVehicleForm from "../components/NewVehicleForm";
-import { useApi } from "../hooks/useApi";
-import { Service, Services } from "../types";
 
+import { Services } from "../types";
+import { useSingleService } from "@/hooks/Configure/useConfigureData";
+import Spinner from "@/components/Spinner";
 function SingleVehicle() {
   const { vehicleType } = useParams();
-  const [service, setService] = useState<Services>({
-    _id: "",
-    service: [],
-    vehicleType: "",
-  });
+
   const navigate = useNavigate();
-  const { get, put } = useApi();
 
+  const { data, isLoading, isError } = useSingleService(vehicleType);
+  const [service, setService] = useState<Services>(
+    () => data || { service: [], vehicleType: "" },
+  );
   useEffect(() => {
-    const fetchVehicleService = async () => {
-      const data = await get<Services>(`services/${vehicleType}`);
+    if (data) {
       setService(data);
-    };
+    }
+  }, [data]);
 
-    fetchVehicleService();
-  }, [vehicleType]);
-
-  const updateService = async () => {
-    if (!service) return;
-    const serviceUpdate = service.service.map(({ _id, ...rest }) => rest);
-    const updatedData = await put<{ service: Service[] }, Services>(
-      `services/${vehicleType}`,
-      {
-        service: serviceUpdate,
-      },
-    );
-    setService(updatedData);
-    console.log(updatedData);
-  };
   return (
     <>
       <FaArrowCircleLeft
         className=" absolute z-10 text-primary text-xl hover:cursor-pointer"
         onClick={() => navigate("/configure")}
       />
-      {service && (
+
+      {isLoading && <Spinner />}
+      {isError && (
+        <div>Error: Los servicios no pudieron ser obtenidos correctamente</div>
+      )}
+
+      {!isLoading && !isError && service && service.service.length === 0 && (
+        <p>No hay servicios en este vehiculo</p>
+      )}
+      {service && service.service.length > 0 && (
         <>
           <h2 className=" text-center text-xl font-semibold">
             Servicios de {service.vehicleType}
           </h2>
-          <div className=" flex justify-around items-center ">
-            <p>Nombre</p>
-            <p>Precio (S/.)</p>
-          </div>
-          <NewVehicleForm
-            service={service}
-            setService={setService}
-            updateService={updateService}
-          />
+
+          <NewVehicleForm service={service} setService={setService} />
         </>
       )}
     </>
