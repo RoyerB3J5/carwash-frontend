@@ -61,3 +61,29 @@ export interface DataTableProps extends ExpenseProps {
   _id: string;
   day: number;
 }
+
+export interface DataMonthProps {
+  averagePerDay: number;
+  totalUsers: number;
+}
+export interface SingleDataReport {
+  label: string;
+  price: number;
+}
+
+export interface DataReport {
+  expenses: SingleDataReport[];
+  incomes: SingleDataReport[];
+  balance: SingleDataReport[];
+}
+
+export interface SingleComparative {
+  label: string;
+  val1: number;
+  val2: number;
+}
+export interface ComparativeDataReport {
+  expenses: SingleComparative[];
+  incomes: SingleComparative[];
+  balance: SingleComparative[];
+}

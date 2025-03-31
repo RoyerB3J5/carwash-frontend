@@ -12,6 +12,6 @@ export const useExpensesData = (date: Date) => {
         `expenses/${date.getMonth() + 1}/${date.getFullYear()}`,
       ),
     enabled: !!date,
-    staleTime: 1000 * 60 * 3,
+    staleTime: 1000 * 60 * 2,
   });
 };
