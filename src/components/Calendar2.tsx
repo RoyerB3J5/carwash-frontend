@@ -19,13 +19,10 @@ interface CalendarProps {
   date: Date;
   setDate: Dispatch<SetStateAction<Date>>;
 }
-function Calendar2({
-  data,
-  date,
-  setDate,
-}: CalendarProps) {
+function Calendar2({ data, date, setDate }: CalendarProps) {
   const dataLenght = data.length - 1;
   const [indexData, setIndexData] = useState(dataLenght);
+  const [isOpen, setIsOpen] = useState(false);
   const handlePreviousYear = () => {
     setIndexData((prev) => (prev > 0 ? prev - 1 : prev));
   };
@@ -35,6 +32,7 @@ function Calendar2({
   const handleSelectMonth = (monthIndex: number) => {
     const newDate = new Date(data[indexData].year, monthIndex, 1);
     setDate(newDate);
+    setIsOpen(false);
   };
   const months = [
     "Enero",
@@ -51,12 +49,12 @@ function Calendar2({
     "Diciembre",
   ];
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild className="self-end bg-white">
         <Button
           variant={"outline"}
           className={cn(
-            "w-[140px] sm:w-[240px] justify-start text-left font-normal"
+            "w-[140px] sm:w-[240px] justify-start text-left font-normal",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -101,9 +99,9 @@ function Calendar2({
                     "h-9 transition-colors",
                     isCurrent &&
                       !isSelected &&
-                      "bg-accent/50 hover:bg-accent/70"
+                      "bg-accent/50 hover:bg-accent/70",
                   )}
-                  onClick={()=>handleSelectMonth(index-1)}
+                  onClick={() => handleSelectMonth(index - 1)}
                 >
                   {months[index - 1].substring(0, 3)}
                 </Button>

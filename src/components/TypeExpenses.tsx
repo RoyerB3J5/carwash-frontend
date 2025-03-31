@@ -2,19 +2,21 @@ import { useEffect, useState } from "react";
 import { useApi } from "../hooks/useApi";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
-interface DataType {
-  _id?: string;
-  name: string;
-}
+import { TypeExpenseProps } from "@/types/index";
+import Spinner from "@/components/Spinner";
+import { useTypeExpensesData } from "@/hooks/TypeExpenses/useTypeExpensesData";
 function TypeExpenses() {
-  const [dataType, setDataType] = useState<DataType[]>([]);
+  const [dataType, setDataType] = useState<TypeExpenseProps[]>([]);
   const [save, setSave] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
-  const [originalData, setOriginalData] = useState<DataType[]>([...dataType]);
-  const { post, get, delete: deleteRequest } = useApi();
+  const [originalData, setOriginalData] = useState<TypeExpenseProps[]>([
+    ...dataType,
+  ]);
+  const { post, delete: deleteRequest } = useApi();
+  const { data, isLoading } = useTypeExpensesData();
   const handleChange = (index: number, newName: string) => {
     const newData = dataType.map((item, i) =>
-      i === index ? { ...item, name: newName } : item
+      i === index ? { ...item, name: newName } : item,
     );
     setDataType(newData);
   };
@@ -24,23 +26,17 @@ function TypeExpenses() {
       return original && original.name !== item.name;
     });
     const newItems = dataType.filter(
-      (item) => !originalData.some((original) => original._id === item._id)
+      (item) => !originalData.some((original) => original._id === item._id),
     );
     const allModifiedItems = [...updatedItems, ...newItems];
     setSave(true);
     await post("type-expenses", allModifiedItems);
-    console.log(allModifiedItems);
     setOriginalData([...dataType]);
     setSave(false);
     setSaveMessage("Los cambios realizados se guardaron correctamente");
     setTimeout(() => setSaveMessage(""), 1000);
   };
 
-  const getTypeExpenses = async () => {
-    const newData = await get<DataType[]>("type-expenses");
-    setDataType(newData);
-    setOriginalData(newData);
-  };
   const deleteTypeExpenses = async (id: string) => {
     await deleteRequest(`type-expenses/${id}`);
     setDataType(dataType.filter((item) => item._id !== id));
@@ -48,8 +44,11 @@ function TypeExpenses() {
   };
 
   useEffect(() => {
-    getTypeExpenses();
-  }, []);
+    if (data) {
+      setDataType(data);
+      setOriginalData(data);
+    }
+  }, [data]);
   const addNewType = () => {
     setDataType([...dataType, { name: "" }]);
   };
@@ -63,6 +62,7 @@ function TypeExpenses() {
             onClick={addNewType}
           />
         </div>
+        {isLoading && <Spinner />}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-10 w-full">
           {dataType.map((data, index) => (
             <div

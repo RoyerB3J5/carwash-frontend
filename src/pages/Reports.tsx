@@ -7,14 +7,19 @@ import {
 } from "@/components/ui/select";
 import { MdOutlineLocalCarWash } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Graphics from "@/components/Graphics";
 import { ChartConfig } from "@/components/ui/chart";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+//import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Calendar2 from "@/components/Calendar2";
 import ComparativeGrapihc from "@/components/ComparativeGrapihc";
+import { useMonthByYear } from "@/hooks/useMonthByYear";
 
-interface YearMonthGroup {
+interface DataApiProps {
+  year: number;
+  month?: number;
+}
+/*interface YearMonthGroup {
   year: number;
   months: number[];
 }
@@ -45,7 +50,7 @@ const generateMonthsByYear = (startDate: Date) => {
     start.setMonth(start.getMonth() + 1);
   }
   return groupedMonths;
-};
+};*/
 function Reports() {
   const [filterType, setFilterType] = useState("Mensual");
 
@@ -128,8 +133,6 @@ function Reports() {
       color: "oklch(0.505 0.213 27.518)",
     },
   } satisfies ChartConfig;
-  
-  
 
   const chartConfig3 = {
     value: {
@@ -137,67 +140,117 @@ function Reports() {
       color: "#FFD700",
     },
   } satisfies ChartConfig;
-  const chartAnual1 = [{
-    label: "Ene",value:450
-  },{
-    label: "Feb",value:754
-  },{
-    label: "Mar",value:245
-  },{
-    label: "Abr",value:474
-  },{
-    label: "May",value:842
-  },{
-    label: "Jun",value:147
-  },{
-    label: "Jul",value:864
-  },{
-    label: "Ago",value:136
-  },{
-    label: "Sep",value:823
-  },{
-    label: "Oct",value:135
-  },{
-    label: "Nov",value:456
-  },{
-    label: "Dic",value:567
-  },] 
-  const chartAnual2 = [{
-    label: "Ene",value:234
-  },{
-    label: "Feb",value:532
-  },{
-    label: "Mar",value:123
-  },{
-    label: "Abr",value:421
-  },{
-    label: "May",value:321
-  },{
-    label: "Jun",value:153
-  },{
-    label: "Jul",value:361
-  },{
-    label: "Ago",value:263
-  },{
-    label: "Sep",value:245
-  },{
-    label: "Oct",value:345
-  },{
-    label: "Nov",value:632
-  },{
-    label: "Dic",value:235
-  },] 
+  const chartAnual1 = [
+    {
+      label: "Ene",
+      value: 450,
+    },
+    {
+      label: "Feb",
+      value: 754,
+    },
+    {
+      label: "Mar",
+      value: 245,
+    },
+    {
+      label: "Abr",
+      value: 474,
+    },
+    {
+      label: "May",
+      value: 842,
+    },
+    {
+      label: "Jun",
+      value: 147,
+    },
+    {
+      label: "Jul",
+      value: 864,
+    },
+    {
+      label: "Ago",
+      value: 136,
+    },
+    {
+      label: "Sep",
+      value: 823,
+    },
+    {
+      label: "Oct",
+      value: 135,
+    },
+    {
+      label: "Nov",
+      value: 456,
+    },
+    {
+      label: "Dic",
+      value: 567,
+    },
+  ];
+  const chartAnual2 = [
+    {
+      label: "Ene",
+      value: 234,
+    },
+    {
+      label: "Feb",
+      value: 532,
+    },
+    {
+      label: "Mar",
+      value: 123,
+    },
+    {
+      label: "Abr",
+      value: 421,
+    },
+    {
+      label: "May",
+      value: 321,
+    },
+    {
+      label: "Jun",
+      value: 153,
+    },
+    {
+      label: "Jul",
+      value: 361,
+    },
+    {
+      label: "Ago",
+      value: 263,
+    },
+    {
+      label: "Sep",
+      value: 245,
+    },
+    {
+      label: "Oct",
+      value: 345,
+    },
+    {
+      label: "Nov",
+      value: 632,
+    },
+    {
+      label: "Dic",
+      value: 235,
+    },
+  ];
 
   const [dataToGrapihc, setDataToGraphic] = useState({
     incomes: chartData1,
-    expenses: chartData2
-  })
-  const [groupedMonths, setGroupedMonths] = useState<YearMonthGroup[]>([]);
+    expenses: chartData2,
+  });
+  //const [groupedMonths, setGroupedMonths] = useState<YearMonthGroup[]>([]);
   const [filterYear, setFilterYear] = useState<number>();
   const currentDate = new Date();
   const [date, setDate] = useState<Date>(currentDate);
-
-  useEffect(() => {
+  const { groupedMonth } = useMonthByYear();
+  /*useEffect(() => {
     const storedGroupedMonths = localStorage.getItem("groupedMonths");
     const lastUpdated = localStorage.getItem("lastUpdated");
     const now = new Date();
@@ -225,43 +278,80 @@ function Reports() {
         localStorage.setItem("lastUpdated", now.toISOString());
       }
     });
-  }, []);
+  }, []);*/
 
   useEffect(() => {
-    if (groupedMonths.length > 0) {
-      setFilterYear(groupedMonths[groupedMonths.length - 1].year);
+    if (groupedMonth.length > 0) {
+      setFilterYear(groupedMonth[groupedMonth.length - 1].year);
     }
-    console.log(groupedMonths);
-  }, [groupedMonths]);
+  }, [groupedMonth]);
 
   const handleChangeFilter = (value: string) => {
     setFilterType(value);
-    if (value === "Mensual"){
+    if (value === "Mensual") {
       setDataToGraphic({
         incomes: chartData1,
-        expenses: chartData2
-      })
+        expenses: chartData2,
+      });
     }
-    if(value === "Anual"){
+    if (value === "Anual") {
       setDataToGraphic({
         incomes: chartAnual1,
-        expenses: chartAnual2
-    })
-  }
-}
-const chartData3 =
-dataToGrapihc.incomes.length > 0 && dataToGrapihc.expenses.length > 0
-  ? dataToGrapihc.incomes.map((item) => {
-      const correspondingItem = dataToGrapihc.expenses.find(
-        (item2) => item2.label === item2.label
-      );
-      return {
-        label: item.label,
-        value:
-          item.value - (correspondingItem ? correspondingItem.value : 0),
-      };
-    })
-  : [];
+        expenses: chartAnual2,
+      });
+    }
+  };
+  const [dataApi, setDataApi] = useState<DataApiProps>({
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+  });
+  const hasInitialized = useRef(false);
+  const initializedApi = useRef(false);
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    if (filterType === "Mensual") {
+      console.log(date.getFullYear());
+      console.log(date.getMonth() + 1);
+      setDataApi({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+      });
+    } else if (filterType === "Anual") {
+      console.log(filterYear);
+      setDataApi({
+        year: filterYear ? filterYear : date.getFullYear(),
+      });
+    }
+    hasInitialized.current = true;
+    setTimeout(() => {
+      hasInitialized.current = false;
+    }, 500);
+  }, [date, filterYear, filterType]);
+
+  useEffect(() => {
+    if (initializedApi.current) return;
+    console.log("llamando a la api con los datos", dataApi);
+    initializedApi.current = true;
+    setTimeout(() => {
+      initializedApi.current = false;
+    }, 500);
+  }, [dataApi]);
+  const chartData3 =
+    dataToGrapihc.incomes.length > 0 && dataToGrapihc.expenses.length > 0
+      ? dataToGrapihc.incomes.map((item) => {
+          const correspondingItem = dataToGrapihc.expenses.find(
+            (item2) => item2.label === item2.label,
+          );
+          return {
+            label: item.label,
+            value:
+              item.value - (correspondingItem ? correspondingItem.value : 0),
+          };
+        })
+      : [];
+  //const {data? staticData, isLoading : loadingStatict, isError: errorStatict } = useStatistcData()
+  //
+
   return (
     <>
       <section className=" relative flex bg-slate-200 rounded-md w-full h-auto p-6  sm:px-12 justify-around items-center gap-6">
@@ -296,9 +386,9 @@ dataToGrapihc.incomes.length > 0 && dataToGrapihc.expenses.length > 0
                 <SelectItem value="Anual">Anual</SelectItem>
               </SelectContent>
             </Select>
-            {groupedMonths.length > 0 ? (
+            {groupedMonth.length > 0 ? (
               filterType === "Mensual" ? (
-                <Calendar2 data={groupedMonths} date={date} setDate={setDate} />
+                <Calendar2 data={groupedMonth} date={date} setDate={setDate} />
               ) : (
                 <Select
                   value={filterYear ? String(filterYear) : undefined}
@@ -308,7 +398,7 @@ dataToGrapihc.incomes.length > 0 && dataToGrapihc.expenses.length > 0
                     <SelectValue placeholder="Ano" />
                   </SelectTrigger>
                   <SelectContent className="bg-white ">
-                    {groupedMonths.map((group) => (
+                    {groupedMonth.map((group) => (
                       <SelectItem value={String(group.year)} key={group.year}>
                         {group.year}
                       </SelectItem>
@@ -322,19 +412,26 @@ dataToGrapihc.incomes.length > 0 && dataToGrapihc.expenses.length > 0
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center justify-items-center">
-          <Graphics title="Ingresos" data={dataToGrapihc.incomes} config={chartConfig1} />
-          <Graphics title="Gastos" data={dataToGrapihc.expenses} config={chartConfig2} />
+          <Graphics
+            title="Ingresos"
+            data={dataToGrapihc.incomes}
+            config={chartConfig1}
+          />
+          <Graphics
+            title="Gastos"
+            data={dataToGrapihc.expenses}
+            config={chartConfig2}
+          />
           {chartData3.length > 0 ? (
             <Graphics title="Balance" data={chartData3} config={chartConfig3} />
           ) : (
             <p>Cargando ...</p>
           )}
         </div>
-        
       </section>
       <ComparativeGrapihc />
     </>
   );
 }
 
-export default Reports
+export default Reports;
