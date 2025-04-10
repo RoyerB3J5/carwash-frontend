@@ -331,6 +331,7 @@ function Reports() {
   useEffect(() => {
     if (initializedApi.current) return;
     console.log("llamando a la api con los datos", dataApi);
+    //refetchGraphic()
     initializedApi.current = true;
     setTimeout(() => {
       initializedApi.current = false;
@@ -349,8 +350,8 @@ function Reports() {
           };
         })
       : [];
-  //const {data? staticData, isLoading : loadingStatict, isError: errorStatict } = useStatistcData()
-  //
+  //const {data : staticData, isLoading : loadingStatict, isError: errorStatict } = useStatistcData()
+  //const { data : graphicData, isLoading: loadingGraphic, isError: errorGraphic, refetch : refetchGraphic }  = useDataDate(dataApi)
 
   return (
     <>

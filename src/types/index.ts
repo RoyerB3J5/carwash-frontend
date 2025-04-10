@@ -5,7 +5,7 @@ export interface UserDate {
 
 export interface FormUserData {
   name: string;
-  lastname: string;
+  extra: string;
   phone: string;
   vehicle: string;
   wash: string;
@@ -86,4 +86,8 @@ export interface ComparativeDataReport {
   expenses: SingleComparative[];
   incomes: SingleComparative[];
   balance: SingleComparative[];
+}
+export interface DataExtraProps {
+  name: string;
+  price: number;
 }
